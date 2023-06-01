@@ -11,7 +11,8 @@ const LoadingStatus = {
 const App = () => {
   const BASE_URL = "https://content.newtonschool.co/v1/pr/main/users";
   const [userId, setUserId] = React.useState(1);
-  const [isLoading, setIsLoading] = React.useState(LoadingStatus.NOT_STARTED);
+  //const [isLoading, setIsLoading] = React.useState(LoadingStatus.NOT_STARTED);
+  const [isLoading, setIsLoading] = React.useState(false);
   const [userData, setUserData] = React.useState({
     id: "",
     email: "",
@@ -20,7 +21,23 @@ const App = () => {
     webiste: "",
   });
 
-  const handleOnClick = () => {};
+  const handleOnClick = () => {
+
+    setIsLoading(true);
+
+    // Simulate API delay
+    setTimeout(() => {
+      fetch(`https://content.newtonschool.co/v1/pr/main/users/${userId}`)
+        .then(response => response.json())
+        .then(data => {
+          setIsLoading(false);
+          setUserData(data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    }, 2000);
+  };
 
   const onChangeHandler = (event) => {
     setUserId(event.target.value);
@@ -41,14 +58,14 @@ const App = () => {
         Get User
       </button>
 
-      <div id="data">
+      {isLoading ? <Loader /> : <div id="data">
         <h1>Click on the button to get the user</h1>
         <h4 id="id">{userData.id}</h4>
         <h4 id="email">{userData.email}</h4>
         <h4 id="name">{userData.name}</h4>
         <h4 id="phone">{userData.phone}</h4>
         <h4 id="website">{userData.website}</h4>
-      </div>
+      </div>}
     </div>
   );
 };
